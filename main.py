@@ -5,7 +5,6 @@ from tkinter import filedialog
 
 LANGUAGES = ["English", "Russian"]
 
-
 english_alphabet = Alphabet("english.txt")
 
 a = english_alphabet.encrypt_text("text_encr.txt", 2, 'decode')
@@ -15,6 +14,8 @@ print(shift)
 windows = Tk()
 windows.title("Caesar Cipher")
 windows.config(padx=100, pady=5)
+
+text_editor = Text()
 
 # Set value when user choose one of the languages
 def combo_click(event):
@@ -41,8 +42,18 @@ def open_file():
     if filepath != "":
         with open(filepath, "r") as file:
             text = file.read()
+            text_editor.delete("1.0", END)
+            text_editor.insert("1.0", text)
             myLabel = Label(text="File downloaded successfully")
             myLabel.grid(column=1, row=8)
+
+# Save the final file
+def save_file():
+    filepath = filedialog.asksaveasfilename()
+    if filepath != "":
+        text = text_editor.get("1.0", END)
+        with open(filepath, "w") as file:
+            file.write(text)
 
 # Logo
 canvas = Canvas(width=200,height=200)
@@ -74,9 +85,14 @@ shift_scale.grid(column=1, row=4)
 scale_label = Label(text="Set cipher shift")
 scale_label.grid(column=1, row=5)
 
-# Button Open file
-open_button = Button(text='Open file', command=open_file)
+# Button: Open file
+open_button = open_button = Button(text='Open file', command=open_file)
 open_button.grid(column=1, row=7)
+
+# Button: Save File
+# TODO: must be inactive while user don't encrypt file
+save_button = Button(text='Save file', command=save_file)
+save_button.grid(column=1, row=9)
 
 
 windows.mainloop()
