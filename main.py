@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from alphabet import Alphabet
+from tkinter import filedialog
 
 LANGUAGES = ["English", "Russian"]
 
@@ -34,6 +35,15 @@ def get_scale_value(event):
     myLabel = Label(text=scale_value)
     myLabel.grid(column=1, row=6)
 
+# Open and read file
+def open_file():
+    filepath = filedialog.askopenfilename()
+    if filepath != "":
+        with open(filepath, "r") as file:
+            text = file.read()
+            myLabel = Label(text="File downloaded successfully")
+            myLabel.grid(column=1, row=8)
+
 # Logo
 canvas = Canvas(width=200,height=200)
 logo_image = PhotoImage(file="img/caesar-cipher.png")
@@ -64,9 +74,9 @@ shift_scale.grid(column=1, row=4)
 scale_label = Label(text="Set cipher shift")
 scale_label.grid(column=1, row=5)
 
-
-
-# Button
+# Button Open file
+open_button = Button(text='Open file', command=open_file)
+open_button.grid(column=1, row=7)
 
 
 windows.mainloop()
