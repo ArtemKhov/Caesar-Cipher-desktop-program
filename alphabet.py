@@ -28,7 +28,11 @@ class Alphabet():
         return final_text
 
     def shift_scale(self, shift_amount: int):
-        self.count_letter_in_alphabet = len(self.language) // 2
+        self.count_letter_in_alphabet = len(self.language)
+        if self.count_letter_in_alphabet % 2 == 0:
+            self.count_letter_in_alphabet = len(self.language) // 2
+        else:
+            self.count_letter_in_alphabet = len(self.language) // 2 + 1
         self.shift = shift_amount % self.count_letter_in_alphabet
 
 
