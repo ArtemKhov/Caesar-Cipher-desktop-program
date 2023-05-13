@@ -11,10 +11,10 @@ class Alphabet():
         else:
             self.count_letter_in_alphabet = len(self.language) // 2 + 1
 
-    def encrypt_text(self, user_file, shift_amount: int, cipher_direction: str):
+    def encrypt_text(self, user_file, shift_amount: int, cipher_direction):
         self.user_file = open(user_file, "r")
 
-        if cipher_direction == "decode":
+        if cipher_direction == 1:
             shift_amount *= -1
 
         self.shift_scale(shift_amount)

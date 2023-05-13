@@ -25,23 +25,6 @@ def combo_click(event):
         russian_alphabet = Alphabet("alphabets/russian.txt")
         return russian_alphabet
 
-
-# Set value when user choose decode option
-def radiobutton_click():
-    if radiobutton.get() == 1:
-        decrypt = Label(text="Decrypt")
-        decrypt.grid(column=4, row=3)
-        return "decode"
-    return 'encode'
-
-# Get value from Scale of the shift
-def get_scale_value(event):
-    # TODO: if scale == 0 popup alert that need to select shift differ from 0
-    scale_value = str(scale_variable.get())
-    myLabel = Label(text=scale_value)
-    myLabel.grid(column=1, row=6)
-    return int(scale_value)
-
 # Open and read file
 def open_file():
     filepath = filedialog.askopenfilename()
@@ -70,7 +53,11 @@ def switch():
 
 # Encode/Decode function
 def encrypt():
-    return Alphabet.encrypt_text(open_file, get_scale_value, radiobutton_click())
+    sh = shift_var.get()
+    print(sh)
+    dir = radiobutton.get()
+    print(dir)
+    return alphabet.encrypt_text(open_file, sh, dir)
 
 
 # Logo
@@ -88,18 +75,17 @@ combobox.grid(column=1, row=2)
 alphabet = combo_click(combobox)
 
 # Radiobutton: Encode and Decode
-radiobutton = BooleanVar()
-radiobutton.set(False)
+radiobutton = IntVar()
 
 encode_radiobutton = Radiobutton(text="Encode", variable=radiobutton, value=0)
 encode_radiobutton.grid(column=0, row=3)
 
-decode_radiobutton = Radiobutton(text="Decode", variable=radiobutton, value=1, command=radiobutton_click)
+decode_radiobutton = Radiobutton(text="Decode", variable=radiobutton, value=1)
 decode_radiobutton.grid(column=3, row=3)
 
 # Scale: shift amount
-scale_variable = Variable()
-shift_scale = Scale(variable=scale_variable, from_=0, to=shift, orient=HORIZONTAL, command=get_scale_value)
+shift_var = IntVar()
+shift_scale = Scale(variable=shift_var, from_=0, to=shift, orient=HORIZONTAL)
 shift_scale.grid(column=1, row=4)
 
 scale_label = Label(text="Set cipher shift")
@@ -117,6 +103,7 @@ encrypt_button.grid(column=1, row=9)
 # Button: Save File
 save_button = Button(text='Save file', state="disabled", command=save_file)
 save_button.grid(column=1, row=10)
+
 
 
 windows.mainloop()
