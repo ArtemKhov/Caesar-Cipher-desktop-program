@@ -81,11 +81,14 @@ class Application(Frame):
 
     # Save the final file
     def save_file(self):
-        filepath = filedialog.asksaveasfilename()
+        files = [('All Files', '*.*'),
+                 ('Text Document', '*.txt')]
+        filepath = filedialog.asksaveasfilename(filetypes=files, defaultextension=".txt")
         if filepath != "":
             text = self.ciphertext
             with open(filepath, "w") as file:
                 file.write(text)
+                success_message = messagebox.showinfo(title="Success", message="File was saved successfully")
 
     def caesar(self):
         m = self.text_editor.get("1.0", END)
