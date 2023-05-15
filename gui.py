@@ -24,7 +24,7 @@ class Application(Frame):
 
         self.languages = ["English", "Russian"]
         self.combobox = ttk.Combobox(values=self.languages)
-        self.combobox.bind("<<ComboboxSelected>>", self.combo_click)
+        self.combobox.bind("<<ComboboxSelected>>", self.combobox_click)
         self.combobox.grid(column=0, row=2)
 
         # Cipher Method label
@@ -45,13 +45,11 @@ class Application(Frame):
         self.open_button.grid(column=1, row=3)
 
         # Key label
-        self.instruction = Label(self, text="Set cipher shift (1-26): ")
-        self.instruction.grid(row=6, column=1, padx=5)
+        self.instruction = Label(self, text=f"Set cipher shift:")
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = Scale(self, variable=self.shift_var, from_=0, to=26, orient=HORIZONTAL)
-        self.shift.grid(column=1, row=7)
+        self.shift = Scale(self, variable=self.shift_var, from_=0, to=1, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
         self.submit_button = Button(self, text="Encode/Decode", command=self.caesar)
@@ -61,11 +59,45 @@ class Application(Frame):
         self.save_button = Button(self, text='Save file', command=self.save_file)
         self.save_button.grid(column=1, row=10)
 
-    def combo_click(self, event):
+    def combobox_click(self, event):
         if self.combobox.get() == "English":
-            with open("alphabets/english.txt", "r") as file:
-                self.alphabet = file.read()
-                return self.alphabet
+            self.file = open("alphabets/english.txt", "r")
+            self.alphabet = []
+            self.count_letter_in_alphabet = ""
+            for letter in self.file:
+                self.alphabet += letter.split(",")
+                self.count_letter_in_alphabet += "".join(letter.split(","))
+            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            else:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
+
+            # show shift scale when user select language
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.grid(row=6, column=1, padx=5)
+            self.shift.grid(column=1, row=7)
+
+        elif self.combobox.get() == "Russian":
+            self.file = open("alphabets/russian.txt", "r")
+            self.alphabet = []
+            self.count_letter_in_alphabet = ""
+            for letter in self.file:
+                self.alphabet += letter.split(",")
+                self.count_letter_in_alphabet += "".join(letter.split(","))
+            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            else:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
+
+            # show shift scale when user select language
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.grid(row=6, column=1, padx=5)
+            self.shift.grid(column=1, row=7)
+
+
+    # Change Scale according to length of the selected alphabet
+    def change_scale(self, another_parameter):
+        self.shift.config(to=self.count_letter_in_alphabet)
 
     # Open and read file
     def open_user_file(self):
