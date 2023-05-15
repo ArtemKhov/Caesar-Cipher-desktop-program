@@ -32,12 +32,12 @@ class Application(Frame):
         self.method.grid(column=1, row=1)
 
         # Radiobutton: Encode and Decode
-        self.radiobutton = IntVar()
+        self.cipher_direction = IntVar()
 
-        self.option = Radiobutton(self, text="Encode", variable=self.radiobutton, value=0)
+        self.option = Radiobutton(self, text="Encode", variable=self.cipher_direction, value=0)
         self.option.grid(column=0, row=2)
 
-        self.option = Radiobutton(self, text="Decode", variable=self.radiobutton, value=1)
+        self.option = Radiobutton(self, text="Decode", variable=self.cipher_direction, value=1)
         self.option.grid(column=2, row=2)
 
         # Button: Open file
@@ -49,7 +49,7 @@ class Application(Frame):
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = Scale(self, variable=self.shift_var, from_=0, to=1, orient=HORIZONTAL, command=self.change_scale)
+        self.shift = Scale(self, variable=self.shift_var, from_=0, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
         self.submit_button = Button(self, text="Encode/Decode", command=self.caesar)
@@ -59,14 +59,18 @@ class Application(Frame):
         self.save_button = Button(self, text='Save file', command=self.save_file)
         self.save_button.grid(column=1, row=10)
 
+    # Select language of the cipher
     def combobox_click(self, event):
         if self.combobox.get() == "English":
-            self.file = open("alphabets/english.txt", "r")
+            self.file = open("alphabets/english1.txt", "r")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
+
+            # return alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
+
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
             else:
@@ -81,13 +85,16 @@ class Application(Frame):
             self.file = open("alphabets/russian.txt", "r")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
+
+            # return alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
+
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
-            else:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
+            else:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # show shift scale when user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
@@ -123,39 +130,22 @@ class Application(Frame):
                 success_message = messagebox.showinfo(title="Success", message="File was saved successfully")
 
     def caesar(self):
-        m = self.text_editor.get("1.0", END)
-        print(m)
+        user_file = self.text_editor.get("1.0", END)
+        shift_amount = self.shift_var.get()
 
-        # k = int(self.key.get())
-        k = self.shift_var.get()
-        print(k)
+        if self.cipher_direction.get() == 1:
+            shift_amount *= -1
 
-        if self.radiobutton.get() == 1:
-            k = -k
-
-        # Empty text container
-        self.ciphertext = ''
-
-        for symbol in m:
-
-            if symbol.isalpha():
-                num = ord(symbol) + k
-
-                if symbol.isupper():
-                    if num > ord('Z'):
-                        num -= 26
-                    elif num < ord('A'):
-                        num += 26
-
-                elif symbol.islower():
-                    if num > ord('z'):
-                        num -= 26
-                    elif num < ord('a'):
-                        num += 26
-
-                self.ciphertext += chr(num)
-            else:
-                self.ciphertext += symbol
+        self.ciphertext = ""
+        for line in user_file:
+            for char in line:
+                if char in self.alphabet:
+                    position = self.alphabet.index(char)
+                    print(self.count_letter_in_alphabet)
+                    new_position = position + shift_amount % self.count_letter_in_alphabet
+                    self.ciphertext += self.alphabet[new_position]
+                else:
+                    self.ciphertext += char
 
         return self.ciphertext
 
