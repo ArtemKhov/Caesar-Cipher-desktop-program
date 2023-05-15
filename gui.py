@@ -62,7 +62,7 @@ class Application(Frame):
     # Select language of the cipher
     def combobox_click(self, event):
         if self.combobox.get() == "English":
-            self.file = open("alphabets/english1.txt", "r")
+            self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
@@ -82,7 +82,7 @@ class Application(Frame):
             self.shift.grid(column=1, row=7)
 
         elif self.combobox.get() == "Russian":
-            self.file = open("alphabets/russian.txt", "r")
+            self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
@@ -92,9 +92,9 @@ class Application(Frame):
                 self.count_letter_in_alphabet += "".join(letter.split(","))
 
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
+                self.count_letter_in_alphabet = len(self.alphabet) // 4 + 1
             else:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
+                self.count_letter_in_alphabet = len(self.alphabet) // 4
 
             # show shift scale when user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
@@ -111,7 +111,7 @@ class Application(Frame):
         self.text_editor = Text()
         filepath = filedialog.askopenfilename()
         if filepath != "":
-            with open(filepath, "r") as file:
+            with open(filepath, "r", encoding="UTF-8") as file:
                 text = file.read()
                 self.text_editor.delete("1.0", END)
                 self.text_editor.insert("1.0", text)
@@ -141,8 +141,7 @@ class Application(Frame):
             for char in line:
                 if char in self.alphabet:
                     position = self.alphabet.index(char)
-                    print(self.count_letter_in_alphabet)
-                    new_position = position + shift_amount % self.count_letter_in_alphabet
+                    new_position = position + shift_amount % int(self.count_letter_in_alphabet)
                     self.ciphertext += self.alphabet[new_position]
                 else:
                     self.ciphertext += char
