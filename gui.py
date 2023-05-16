@@ -41,10 +41,11 @@ class Application(Frame):
         self.option.grid(column=2, row=2)
 
         # Button: Open file
-        self.open_button = Button(self, text='Open file', command=self.open_user_file)
+        self.open_button = Button(self, text='Open file', state="disabled", command=self.open_user_file)
         self.open_button.grid(column=1, row=3)
 
-        # Key label
+
+        # Shift label
         self.instruction = Label(self, text=f"Set cipher shift:")
 
         # Scale: shift amount
@@ -52,21 +53,22 @@ class Application(Frame):
         self.shift = Scale(self, variable=self.shift_var, from_=0, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
-        self.submit_button = Button(self, text="Encode/Decode", command=self.caesar)
-        self.submit_button.grid(row=8, column=1, padx=5)
+        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch(), self.caesar])
 
         # Button: Save File
-        self.save_button = Button(self, text='Save file', command=self.save_file)
+        self.save_button = Button(self, text='Save file', state="disabled", command=self.save_file)
         self.save_button.grid(column=1, row=10)
+
 
     # Select language of the cipher
     def combobox_click(self, event):
         if self.combobox.get() == "English":
+            self.switch()
             self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
-            # return alphabet and length of the alphabet into variables
+            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
@@ -76,7 +78,7 @@ class Application(Frame):
             else:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
 
-            # show shift scale when user select language
+            # Show shift scale when the user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
             self.instruction.grid(row=6, column=1, padx=5)
             self.shift.grid(column=1, row=7)
@@ -86,7 +88,7 @@ class Application(Frame):
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
-            # return alphabet and length of the alphabet into variables
+            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
@@ -96,17 +98,17 @@ class Application(Frame):
             else:
                 self.count_letter_in_alphabet = len(self.alphabet) // 4
 
-            # show shift scale when user select language
+            # Show shift scale when the user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
             self.instruction.grid(row=6, column=1, padx=5)
             self.shift.grid(column=1, row=7)
 
 
-    # Change Scale according to length of the selected alphabet
+    # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
         self.shift.config(to=self.count_letter_in_alphabet)
 
-    # Open and read file
+    # Open and read user file
     def open_user_file(self):
         self.text_editor = Text()
         filepath = filedialog.askopenfilename()
@@ -116,7 +118,9 @@ class Application(Frame):
                 self.text_editor.delete("1.0", END)
                 self.text_editor.insert("1.0", text)
                 success_message = messagebox.showinfo(title="Success", message="File downloaded successfully")
+                self.submit_button.grid(row=8, column=1, padx=5)
                 return self.text_editor
+
 
     # Save the final file
     def save_file(self):
@@ -124,16 +128,33 @@ class Application(Frame):
                  ('Text Document', '*.txt')]
         filepath = filedialog.asksaveasfilename(filetypes=files, defaultextension=".txt")
         if filepath != "":
-            text = self.ciphertext
-            with open(filepath, "w") as file:
-                file.write(text)
-                success_message = messagebox.showinfo(title="Success", message="File was saved successfully")
+            try:
+                text = self.ciphertext
+                with open(filepath, "w") as file:
+                    file.write(text)
+                    success_message = messagebox.showinfo(title="Success", message="File was saved successfully")
+            except AttributeError:
+                warning_message = messagebox.showwarning(title="Warning",
+                                                         message="Make sure that you select the cipher language")
 
+    # Switch state of the buttons
+    def switch(self):
+        # Make the "Save file" button active when the user click "Encode/Decode" button
+        if self.save_button["state"] == "disabled":
+            self.save_button["state"] = "normal"
+
+        # Make the "Open File" button active when the user select one of the cipher language
+        if self.combobox_click:
+            self.open_button["state"] = "normal"
+
+    # Main func to Encode/Decode user file
     def caesar(self):
+        # Get the user's text
         user_file = self.text_editor.get("1.0", END)
+        # Get the user-selected shift
         shift_amount = self.shift_var.get()
 
-        # If user select "Decode" shift == -shift
+        # If the user select "Decode" shift == -shift
         if self.cipher_direction.get() == 1:
             shift_amount *= -1
 
@@ -148,7 +169,7 @@ class Application(Frame):
                 else:
                     self.ciphertext += char
 
-        # Shows warning if user selected different the cipher language and the language of the downloaded file
+        # Shows warning if the user selected different the cipher language and the language of the downloaded file
         if self.ciphertext in user_file:
 
             warning_message = messagebox.showwarning(title="Warning",
@@ -157,7 +178,7 @@ class Application(Frame):
         else:
             return self.ciphertext
 
-
+# Initialize app window
 window = Tk()
 window.title("Caesar Cipher")
 window.config(padx=50, pady=5)
