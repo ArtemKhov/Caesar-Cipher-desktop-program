@@ -53,11 +53,11 @@ class Application(Frame):
         self.shift = Scale(self, variable=self.shift_var, from_=1, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
-        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch(), self.caesar])
+        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch(), self.caesar()])
 
         # Button: Save File
         self.save_button = Button(self, text='Save file', state="disabled", command=self.save_file)
-        self.save_button.grid(column=1, row=10)
+        # self.save_button.grid(column=1, row=10)
 
 
     # Select language of the cipher
@@ -118,7 +118,10 @@ class Application(Frame):
                 self.text_editor.delete("1.0", END)
                 self.text_editor.insert("1.0", text)
                 success_message = messagebox.showinfo(title="Success", message="File downloaded successfully")
+
                 self.submit_button.grid(row=8, column=1, padx=5)
+                self.save_button.grid(column=1, row=10)
+
                 return self.text_editor
 
 
@@ -140,7 +143,7 @@ class Application(Frame):
     # Switch state of the buttons
     def switch(self):
         # Make the "Save file" button active when the user click "Encode/Decode" button
-        if self.save_button["state"] == "disabled":
+        if self.caesar:
             self.save_button["state"] = "normal"
 
         # Make the "Open File" button active when the user select one of the cipher language
