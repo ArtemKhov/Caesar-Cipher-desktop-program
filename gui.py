@@ -50,7 +50,7 @@ class Application(Frame):
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = Scale(self, variable=self.shift_var, from_=0, orient=HORIZONTAL, command=self.change_scale)
+        self.shift = Scale(self, variable=self.shift_var, from_=1, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
         self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch(), self.caesar])
