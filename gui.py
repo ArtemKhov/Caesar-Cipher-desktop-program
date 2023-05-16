@@ -133,9 +133,11 @@ class Application(Frame):
         user_file = self.text_editor.get("1.0", END)
         shift_amount = self.shift_var.get()
 
+        # If user select "Decode" shift == -shift
         if self.cipher_direction.get() == 1:
             shift_amount *= -1
 
+        # Encode/Decode user file
         self.ciphertext = ""
         for line in user_file:
             for char in line:
@@ -146,7 +148,14 @@ class Application(Frame):
                 else:
                     self.ciphertext += char
 
-        return self.ciphertext
+        # Shows warning if user selected different the cipher language and the language of the downloaded file
+        if self.ciphertext in user_file:
+
+            warning_message = messagebox.showwarning(title="Warning",
+                                                     message="The cipher language does not match the language of the downloaded file!"
+                                                             "\n\nPlease make sure that the selected cipher language matches the language of the file and try again.")
+        else:
+            return self.ciphertext
 
 
 window = Tk()
