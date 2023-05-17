@@ -181,12 +181,12 @@ class Application(Frame):
 
         # Shows warning if the user selected different the cipher language and the language of the downloaded file
         if self.ciphertext in user_file:
-            warning_message = messagebox.showwarning(title="Warning",
-                                                     message="The cipher language does not match the language of the downloaded file!"
-                                                             "\n\nPlease make sure that the selected cipher language matches the language of the file."
-                                                             "\n\nOr try to reopen your file :)")
-        else:
-            return self.ciphertext
+            warning_message = messagebox.showwarning(title="The languages are not compatible",
+                                                     message="Please try to reopen your file :)"
+                                                             "\n\nOr make sure that the selected cipher language matches the language of the file.")
+        # Return Final text
+        return self.ciphertext
+
 
 # Initialize app window
 window = Tk()
