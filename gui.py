@@ -75,8 +75,6 @@ class Application(Frame):
 
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
-            else:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2 + 1
 
             # Show shift scale when the user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
@@ -84,6 +82,7 @@ class Application(Frame):
             self.shift.grid(column=1, row=7)
 
         elif self.combobox.get() == "Russian":
+            self.switch()
             self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
@@ -94,9 +93,7 @@ class Application(Frame):
                 self.count_letter_in_alphabet += "".join(letter.split(","))
 
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 4 + 1
-            else:
-                self.count_letter_in_alphabet = len(self.alphabet) // 4
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # Show shift scale when the user select language
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
@@ -106,7 +103,7 @@ class Application(Frame):
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
-        self.shift.config(to=self.count_letter_in_alphabet)
+        self.shift.config(to=int(self.count_letter_in_alphabet))
 
     # Open and read user file
     def open_user_file(self):
@@ -133,12 +130,12 @@ class Application(Frame):
         if filepath != "":
             try:
                 text = self.ciphertext
-                with open(filepath, "w") as file:
+                with open(filepath, "w", encoding="UTF-8") as file:
                     file.write(text)
                     success_message = messagebox.showinfo(title="Success", message="File was saved successfully")
             except AttributeError:
                 warning_message = messagebox.showwarning(title="Warning",
-                                                         message="Make sure that you select the cipher language")
+                                                         message="Make sure that you select the cipher language or download your file")
 
     # Switch state of the buttons
     def switch(self):
@@ -154,6 +151,7 @@ class Application(Frame):
     def caesar(self):
         # Get the user's text
         user_file = self.text_editor.get("1.0", END)
+        print(user_file)
         # Get the user-selected shift
         shift_amount = self.shift_var.get()
 
@@ -165,19 +163,21 @@ class Application(Frame):
         self.ciphertext = ""
         for line in user_file:
             for char in line:
-                if char in self.alphabet:
-                    position = self.alphabet.index(char)
-                    new_position = position + shift_amount % int(self.count_letter_in_alphabet)
+                if char.lower() in self.alphabet:
+                    position = self.alphabet.index(char.lower())
+                    new_position = position + (shift_amount % (int(self.count_letter_in_alphabet)))
                     self.ciphertext += self.alphabet[new_position]
                 else:
                     self.ciphertext += char
+        print(self.ciphertext)
 
         # Shows warning if the user selected different the cipher language and the language of the downloaded file
         if self.ciphertext in user_file:
 
             warning_message = messagebox.showwarning(title="Warning",
                                                      message="The cipher language does not match the language of the downloaded file!"
-                                                             "\n\nPlease make sure that the selected cipher language matches the language of the file and try again.")
+                                                             "\n\nPlease make sure that the selected cipher language matches the language of the file."
+                                                             "\n\nOr try to reopen your file :)")
         else:
             return self.ciphertext
 
