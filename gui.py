@@ -53,17 +53,18 @@ class Application(Frame):
         self.shift = Scale(self, variable=self.shift_var, from_=1, orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
-        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch(), self.caesar()])
+        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch_buttons_state(0), self.caesar()])
+
 
         # Button: Save File
         self.save_button = Button(self, text='Save file', state="disabled", command=self.save_file)
-        # self.save_button.grid(column=1, row=10)
+
 
 
     # Select language of the cipher
     def combobox_click(self, event):
         if self.combobox.get() == "English":
-            self.switch()
+            self.switch_buttons_state(1)
             self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
@@ -73,6 +74,7 @@ class Application(Frame):
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
 
+            # Correct alphabet to the cipher shift
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
@@ -82,7 +84,7 @@ class Application(Frame):
             self.shift.grid(column=1, row=7)
 
         elif self.combobox.get() == "Russian":
-            self.switch()
+            self.switch_buttons_state(1)
             self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
@@ -92,6 +94,7 @@ class Application(Frame):
                 self.alphabet += letter.split(",")
                 self.count_letter_in_alphabet += "".join(letter.split(","))
 
+            # Correct alphabet to the cipher shift
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
@@ -116,9 +119,11 @@ class Application(Frame):
                 self.text_editor.insert("1.0", text)
                 success_message = messagebox.showinfo(title="Success", message="File downloaded successfully")
 
+                # Show "Encode/Decode" and "Save file" buttons when the user open your file
                 self.submit_button.grid(row=8, column=1, padx=5)
                 self.save_button.grid(column=1, row=10)
 
+                # Return value
                 return self.text_editor
 
 
@@ -138,20 +143,23 @@ class Application(Frame):
                                                          message="Make sure that you select the cipher language or download your file")
 
     # Switch state of the buttons
-    def switch(self):
+    def switch_buttons_state(self, button_key):
         # Make the "Save file" button active when the user click "Encode/Decode" button
-        if self.caesar:
-            self.save_button["state"] = "normal"
+        if button_key == 0:
+            if self.submit_button:
+                self.save_button["state"] = "normal"
 
         # Make the "Open File" button active when the user select one of the cipher language
-        if self.combobox_click:
-            self.open_button["state"] = "normal"
+        if button_key == 1:
+            if self.combobox_click:
+                self.open_button["state"] = "normal"
 
     # Main func to Encode/Decode user file
     def caesar(self):
         # Get the user's text
         user_file = self.text_editor.get("1.0", END)
-        print(user_file)
+        print(user_file) # debug
+
         # Get the user-selected shift
         shift_amount = self.shift_var.get()
 
@@ -169,11 +177,10 @@ class Application(Frame):
                     self.ciphertext += self.alphabet[new_position]
                 else:
                     self.ciphertext += char
-        print(self.ciphertext)
+        print(self.ciphertext) # debug
 
         # Shows warning if the user selected different the cipher language and the language of the downloaded file
         if self.ciphertext in user_file:
-
             warning_message = messagebox.showwarning(title="Warning",
                                                      message="The cipher language does not match the language of the downloaded file!"
                                                              "\n\nPlease make sure that the selected cipher language matches the language of the file."
