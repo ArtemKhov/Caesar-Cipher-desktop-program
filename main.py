@@ -77,9 +77,9 @@ class Application(Frame):
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # Show shift scale when the user select language
+            self.shift.grid(column=1, row=6)
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=6, column=1, padx=5)
-            self.shift.grid(column=1, row=7)
+            self.instruction.grid(row=7, column=1, padx=5)
 
         elif self.combobox.get() == "French":
             self.german_lng = 0
@@ -98,9 +98,9 @@ class Application(Frame):
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # Show shift scale when the user select language
+            self.shift.grid(column=1, row=6)
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=6, column=1, padx=5)
-            self.shift.grid(column=1, row=7)
+            self.instruction.grid(row=7, column=1, padx=5)
 
         elif self.combobox.get() == "German":
             self.switch_buttons_state(1)
@@ -118,9 +118,9 @@ class Application(Frame):
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # Show shift scale when the user select language
+            self.shift.grid(column=1, row=6)
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=6, column=1, padx=5)
-            self.shift.grid(column=1, row=7)
+            self.instruction.grid(row=7, column=1, padx=5)
 
         elif self.combobox.get() == "Russian":
             self.switch_buttons_state(1)
@@ -138,9 +138,9 @@ class Application(Frame):
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
             # Show shift scale when the user select language
+            self.shift.grid(column=1, row=6)
             self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=6, column=1, padx=5)
-            self.shift.grid(column=1, row=7)
+            self.instruction.grid(row=7, column=1, padx=5)
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
