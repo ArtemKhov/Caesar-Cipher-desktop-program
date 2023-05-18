@@ -14,7 +14,7 @@ class Application(Frame):
     def create_widgets(self):
         # Logo
         self.canvas = Canvas(width=200, height=200)
-        self.logo_image = PhotoImage(file="img/caesar-cipher.png")
+        self.logo_image = PhotoImage(file="img/caesar-cipher_logo.png")
         self.canvas.create_image(100, 100, image=self.logo_image)
         self.canvas.grid(column=0, row=0)
 
@@ -226,6 +226,8 @@ class Application(Frame):
 # Initialize app window
 window = Tk()
 window.title("Caesar Cipher")
+icon_app = PhotoImage(file="img/icon-app.png")
+window.wm_iconphoto(False, icon_app)
 window.config(padx=50, pady=5)
 app = Application(window)
 
