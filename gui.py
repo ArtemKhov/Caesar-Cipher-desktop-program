@@ -22,7 +22,7 @@ class Application(Frame):
         self.language_label = ttk.Label(text="Select cipher language:")
         self.language_label.grid(column=0, row=1)
 
-        self.languages = ["English", "Russian"]
+        self.languages = ["English", "French", "German", "Russian"]
         self.combobox = ttk.Combobox(values=self.languages)
         self.combobox.bind("<<ComboboxSelected>>", self.combobox_click)
         self.combobox.grid(column=0, row=2)
@@ -44,7 +44,6 @@ class Application(Frame):
         self.open_button = Button(self, text='Open file', state="disabled", command=self.open_user_file)
         self.open_button.grid(column=1, row=3)
 
-
         # Shift label
         self.instruction = Label(self, text=f"Set cipher shift:")
 
@@ -55,17 +54,57 @@ class Application(Frame):
         # Button: Encode/Decode
         self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch_buttons_state(0), self.caesar()])
 
-
         # Button: Save File
         self.save_button = Button(self, text='Save file', state="disabled", command=self.save_file)
 
 
-
     # Select language of the cipher
     def combobox_click(self, event):
+
         if self.combobox.get() == "English":
             self.switch_buttons_state(1)
             self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
+            self.alphabet = []
+            self.count_letter_in_alphabet = ""
+
+            # Return an alphabet and length of the alphabet into variables
+            for letter in self.file:
+                self.alphabet += letter.split(",")
+                self.count_letter_in_alphabet += "".join(letter.split(","))
+
+            # Correct alphabet to the cipher shift
+            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
+
+            # Show shift scale when the user select language
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.grid(row=6, column=1, padx=5)
+            self.shift.grid(column=1, row=7)
+
+        elif self.combobox.get() == "French":
+            self.german_lng = 0
+            self.switch_buttons_state(1)
+            self.file = open("alphabets/french.txt", "r", encoding="UTF-8")
+            self.alphabet = []
+            self.count_letter_in_alphabet = ""
+
+            # Return an alphabet and length of the alphabet into variables
+            for letter in self.file:
+                self.alphabet += letter.split(",")
+                self.count_letter_in_alphabet += "".join(letter.split(","))
+
+            # Correct alphabet to the cipher shift
+            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
+                self.count_letter_in_alphabet = len(self.alphabet) // 2
+
+            # Show shift scale when the user select language
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.grid(row=6, column=1, padx=5)
+            self.shift.grid(column=1, row=7)
+
+        elif self.combobox.get() == "German":
+            self.switch_buttons_state(1)
+            self.file = open("alphabets/german.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
@@ -103,7 +142,6 @@ class Application(Frame):
             self.instruction.grid(row=6, column=1, padx=5)
             self.shift.grid(column=1, row=7)
 
-
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
         self.shift.config(to=int(self.count_letter_in_alphabet))
@@ -117,7 +155,8 @@ class Application(Frame):
                 text = file.read()
                 self.text_editor.delete("1.0", END)
                 self.text_editor.insert("1.0", text)
-                success_message = messagebox.showinfo(title="Success", message="File downloaded successfully")
+                success_message = messagebox.showinfo(title="File downloaded successfully",
+                                                      message="For correct Encode/Decode: make sure that the selected cipher language matches the language of the file.")
 
                 # Show "Encode/Decode" and "Save file" buttons when the user open your file
                 self.submit_button.grid(row=8, column=1, padx=5)
@@ -177,14 +216,10 @@ class Application(Frame):
                     self.ciphertext += self.alphabet[new_position]
                 else:
                     self.ciphertext += char
+
         print(self.ciphertext) # debug
 
-        # Shows warning if the user selected different the cipher language and the language of the downloaded file
-        if self.ciphertext in user_file:
-            warning_message = messagebox.showwarning(title="The languages are not compatible",
-                                                     message="Please try to reopen your file :)"
-                                                             "\n\nOr make sure that the selected cipher language matches the language of the file.")
-        # Return Final text
+        # Return final text
         return self.ciphertext
 
 
