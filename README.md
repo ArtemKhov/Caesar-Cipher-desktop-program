@@ -15,7 +15,7 @@ Build with Python. Implemented with a GUI (made in tkinter).
 - Read user text from file
 - Save the encrypted text in an individual file
 
-## Fast using repo:
+## Fast using repo
 You can set up project locally.
 To get a local copy:
 ```sh
