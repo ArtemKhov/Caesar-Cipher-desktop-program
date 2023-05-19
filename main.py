@@ -19,43 +19,53 @@ class Application(Frame):
         self.canvas.grid(column=0, row=0)
 
         # Combobox: select cipher language
-        self.language_label = ttk.Label(text="Select cipher language:")
-        self.language_label.grid(column=0, row=1)
+        self.language_label = ttk.Label(text="Select cipher language:", foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"))
+        self.language_label.grid(column=0, row=1, pady=5)
 
         self.languages = ["English", "French", "German", "Russian"]
-        self.combobox = ttk.Combobox(values=self.languages)
+        self.combobox = ttk.Combobox(values=self.languages, foreground="#002B5B", font=("Lucida Sans Unicode", 12))
         self.combobox.bind("<<ComboboxSelected>>", self.combobox_click)
-        self.combobox.grid(column=0, row=2)
+        self.combobox.grid(column=0, row=2, pady=(0, 25))
+
+        # Separator
+        self.separator = ttk.Separator(orient=HORIZONTAL)
+        self.separator.grid(column=0, row=3, sticky="ew")
 
         # Cipher Method label
-        self.method = Label(self, text="Choose method:")
-        self.method.grid(column=1, row=1)
+        self.method = Label(self, text="Choose method:", foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"))
+        self.method.grid(column=1, row=1, pady=(10,0))
 
         # Radiobutton: Encode and Decode
         self.cipher_direction = IntVar()
 
-        self.option = Radiobutton(self, text="Encode", variable=self.cipher_direction, value=0)
+        self.option = Radiobutton(self, text="Encode", foreground="#002B5B", font=("Lucida Sans Unicode", 11),
+                                  variable=self.cipher_direction, value=0)
         self.option.grid(column=0, row=2)
 
-        self.option = Radiobutton(self, text="Decode", variable=self.cipher_direction, value=1)
+        self.option = Radiobutton(self, text="Decode", foreground="#002B5B", font=("Lucida Sans Unicode", 11),
+                                  variable=self.cipher_direction, value=1)
         self.option.grid(column=2, row=2)
 
         # Button: Open file
-        self.open_button = Button(self, text='Open file', state="disabled", command=self.open_user_file)
-        self.open_button.grid(column=1, row=3)
+        self.open_button = Button(self, text='Open file', foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"),
+                                  state="disabled", command=self.open_user_file)
+        self.open_button.grid(column=1, row=3, ipadx=5, pady=25)
 
         # Shift label
-        self.instruction = Label(self, text=f"Set cipher shift:")
+        self.instruction = Label(self, text=f"Set cipher shift", foreground="#002B5B", font=("Lucida Sans Unicode", 10))
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = Scale(self, variable=self.shift_var, from_=1, orient=HORIZONTAL, command=self.change_scale)
+        self.shift = Scale(self, variable=self.shift_var, from_=1, foreground="#002B5B", font=("Lucida Sans Unicode", 10),
+                           orient=HORIZONTAL, command=self.change_scale)
 
         # Button: Encode/Decode
-        self.submit_button = Button(self, text="Encode/Decode", command=lambda: [self.switch_buttons_state(0), self.caesar()])
+        self.submit_button = Button(self, text="Encode/Decode", background="#002B5B", foreground="white", font=("Lucida Sans Unicode", 12, "bold"),
+                                    command=lambda: [self.switch_buttons_state(0), self.caesar()])
 
         # Button: Save File
-        self.save_button = Button(self, text='Save file', state="disabled", command=self.save_file)
+        self.save_button = Button(self, text='Save file', foreground="white", font=("Lucida Sans Unicode", 12, "bold"),
+                                  state="disabled", command=self.save_file)
 
 
     # Select language of the cipher
@@ -78,8 +88,8 @@ class Application(Frame):
 
             # Show shift scale when the user select language
             self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=7, column=1, padx=5)
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
+            self.instruction.grid(column=1, row=7, padx=5)
 
         elif self.combobox.get() == "French":
             self.german_lng = 0
@@ -99,8 +109,8 @@ class Application(Frame):
 
             # Show shift scale when the user select language
             self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
-            self.instruction.grid(row=7, column=1, padx=5)
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
+            self.instruction.grid(column=1, row=7, padx=5)
 
         elif self.combobox.get() == "German":
             self.switch_buttons_state(1)
@@ -119,7 +129,7 @@ class Application(Frame):
 
             # Show shift scale when the user select language
             self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
             self.instruction.grid(row=7, column=1, padx=5)
 
         elif self.combobox.get() == "Russian":
@@ -139,7 +149,7 @@ class Application(Frame):
 
             # Show shift scale when the user select language
             self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}): ")
+            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
             self.instruction.grid(row=7, column=1, padx=5)
 
     # Change Scale according to the length of the selected alphabet
@@ -159,12 +169,11 @@ class Application(Frame):
                                                       message="For correct Encode/Decode: make sure that the selected cipher language matches the language of the file.")
 
                 # Show "Encode/Decode" and "Save file" buttons when the user open your file
-                self.submit_button.grid(row=8, column=1, padx=5)
-                self.save_button.grid(column=1, row=10)
+                self.submit_button.grid(column=1, row=8, ipadx=15, pady=15)
+                self.save_button.grid(column=1, row=10, ipadx=15)
 
                 # Return value
                 return self.text_editor
-
 
     # Save the final file
     def save_file(self):
@@ -183,21 +192,22 @@ class Application(Frame):
 
     # Switch state of the buttons
     def switch_buttons_state(self, button_key):
-        # Make the "Save file" button active when the user click "Encode/Decode" button
+        # Make the "Save file" button active and change bg-color when the user click "Encode/Decode" button
         if button_key == 0:
             if self.submit_button:
                 self.save_button["state"] = "normal"
+                self.save_button.config(background="#5F8D4E")
 
-        # Make the "Open File" button active when the user select one of the cipher language
+        # Make the "Open File" button active and change bg-color when the user select one of the cipher language
         if button_key == 1:
             if self.combobox_click:
                 self.open_button["state"] = "normal"
+                self.open_button.config(background="#F6FFDE")
 
     # Main func to Encode/Decode user file
     def caesar(self):
         # Get the user's text
         user_file = self.text_editor.get("1.0", END)
-        print(user_file) # debug
 
         # Get the user-selected shift
         shift_amount = self.shift_var.get()
@@ -216,8 +226,6 @@ class Application(Frame):
                     self.ciphertext += self.alphabet[new_position]
                 else:
                     self.ciphertext += char
-
-        print(self.ciphertext) # debug
 
         # Return final text
         return self.ciphertext
