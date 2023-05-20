@@ -47,7 +47,7 @@ class Application(Frame):
         self.option.grid(column=2, row=2)
 
         # Button: Open file
-        self.open_button = Button(self, text='Open file', foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"),
+        self.open_button = Button(self, text='Open TXT File', foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"),
                                   state="disabled", command=self.open_user_file)
         self.open_button.grid(column=1, row=3, ipadx=5, pady=25)
 
@@ -161,19 +161,24 @@ class Application(Frame):
         self.text_editor = Text()
         filepath = filedialog.askopenfilename()
         if filepath != "":
-            with open(filepath, "r", encoding="UTF-8") as file:
-                text = file.read()
-                self.text_editor.delete("1.0", END)
-                self.text_editor.insert("1.0", text)
-                success_message = messagebox.showinfo(title="File downloaded successfully",
-                                                      message="For correct Encode/Decode: make sure that the selected cipher language matches the language of the file.")
+            try:
+                with open(filepath, "r", encoding="UTF-8") as file:
+                    text = file.read()
+                    self.text_editor.delete("1.0", END)
+                    self.text_editor.insert("1.0", text)
+                    success_message = messagebox.showinfo(title="File downloaded successfully",
+                                                          message="For correct Encode/Decode: make sure that the selected cipher language matches the language of the file.")
 
-                # Show "Encode/Decode" and "Save file" buttons when the user open your file
-                self.submit_button.grid(column=1, row=8, ipadx=15, pady=15)
-                self.save_button.grid(column=1, row=10, ipadx=15)
+                    # Show "Encode/Decode" and "Save file" buttons when the user open your file
+                    self.submit_button.grid(column=1, row=8, ipadx=15, pady=15)
+                    self.save_button.grid(column=1, row=10, ipadx=15)
 
-                # Return value
-                return self.text_editor
+                    # Return value
+                    return self.text_editor
+            except UnicodeDecodeError:
+                warning_message = messagebox.showwarning(title="Wrong file extension!",
+                                                         message="The file must have a .txt extension")
+
 
     # Save the final file
     def save_file(self):
