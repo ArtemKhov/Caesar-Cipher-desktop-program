@@ -14,6 +14,7 @@ Build with Python. Implemented with a GUI (made in tkinter).
 - Set cipher key depends on selected language
 - Read user text from file
 - Save the encrypted text in an individual file
+- Buttons in the program appear/become available as you select options
 
 ## Fast using repo
 You can set up project locally.
