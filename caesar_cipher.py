@@ -102,11 +102,15 @@ class App(CTk.CTk):
                                    button_hover_color="#18bc9c",
                                    orientation=HORIZONTAL,
                                    command=self.change_scale)
+        self.shift.set(1)
+
 
         # Scale Entry frame
         self.scale_entry = CTk.CTkEntry(master=self.scale_frame, width=30,
                                         text_color="black",
                                         fg_color="white")
+        self.scale_entry.insert(0, "1")
+        self.scale_entry.configure(state="disabled")
 
         # Shift label
         self.instruction = CTk.CTkLabel(master=self.scale_frame, text=f"Set cipher shift",
@@ -242,6 +246,8 @@ class App(CTk.CTk):
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
+
+        print(self.shift_var.get())
         self.shift.configure(to=int(self.count_letter_in_alphabet))
 
         # Put shift_value into Scale Entry
