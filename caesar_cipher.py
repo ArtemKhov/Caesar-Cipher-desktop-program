@@ -1,82 +1,151 @@
+import customtkinter as CTk
 from tkinter import *
-from tkinter import ttk
 from tkinter import filedialog
 from tkinter import messagebox
+from PIL import Image
 
-class Application(Frame):
+class App(CTk.CTk):
 
-    def __init__(self, master):
-        """ Initialize the Frame """
-        Frame.__init__(self, master)
+    def __init__(self):
+        super().__init__()
+        self.title("Caesar Cipher")
+        self.resizable(False,False)
+        self.iconbitmap("images/icon_app.ico")
         self.create_widgets()
-        self.grid()
 
     def create_widgets(self):
         # Logo
-        self.canvas = Canvas(width=200, height=200)
-        self.logo_image = PhotoImage(file="img/caesar-cipher_logo.png")
-        self.canvas.create_image(100, 100, image=self.logo_image)
-        self.canvas.grid(column=0, row=0)
+        self.logo = CTk.CTkImage(light_image=Image.open("images/caesar_cipher_light.png"),
+                                 dark_image=Image.open("images/caesar_cipher_dark.png"),
+                                 size=(150, 150))
+        self.logo = CTk.CTkLabel(master=self, text="", image=self.logo)
+        self.logo.grid(column=1, row=2)
+
+        # Switch Dark/Light mode slider
+        self.appearance_mode_slider = CTk.CTkOptionMenu(master=self, values=["Light", "Dark"], width=70,
+                                                        text_color=("white", "black"),
+                                                        fg_color=("grey", "white"),
+                                                        button_color=("#69676E", "#ECF0F1"),
+                                                        button_hover_color=("#2c3e50", "#95a5a6"),
+                                                        command=self.change_appearance_mode)
+        self.appearance_mode_slider.grid(column=1, row=0, pady=(10, 20), sticky="ne")
+
+
+        # Language frame
+        self.language_frame = CTk.CTkFrame(master=self, fg_color=("grey", "#ECF0F1"))
+        self.language_frame.grid(column=1, row=3, pady=(35,0), padx=50, sticky="nsew")
 
         # Combobox: select cipher language
-        self.language_label = ttk.Label(text="Select cipher language:", foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"))
-        self.language_label.grid(column=0, row=1, pady=5)
+        self.language_label = CTk.CTkLabel(master=self.language_frame, text="Select cipher language:",
+                                           text_color=("white", "black"),
+                                           font=("Lucida Unicode", 18, "bold"))
+        self.language_label.grid(column=0, row=0, pady=5, padx=30)
 
+        self.combobox_var = CTk.StringVar()
         self.languages = ["English", "French", "German", "Russian"]
-        self.combobox = ttk.Combobox(values=self.languages, foreground="#002B5B", font=("Lucida Sans Unicode", 12))
-        self.combobox.bind("<<ComboboxSelected>>", self.combobox_click)
-        self.combobox.grid(column=0, row=2, pady=(0, 25))
+        self.combobox = CTk.CTkComboBox(master=self.language_frame, values=self.languages,
+                                        text_color=("black", "white"),
+                                        font=("Lucida Sans Unicode", 14),
+                                        fg_color=("white", "#69676E"),
+                                        border_color=("white", "grey"),
+                                        button_color=("#ECF0F1", "grey"),
+                                        button_hover_color="#18bc9c",
+                                        variable=self.combobox_var, command=self.combobox_click)
+        self.combobox.grid(column=0, row=1, pady=(0, 25))
 
-        # Separator
-        self.separator = ttk.Separator(orient=HORIZONTAL)
-        self.separator.grid(column=0, row=3, sticky="ew")
 
         # Cipher Method label
-        self.method = Label(self, text="Choose method:", foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"))
-        self.method.grid(column=1, row=1, pady=(10,0))
+        self.method = CTk.CTkLabel(master=self, text="Choose method:",
+                                   text_color=("black", "white"),
+                                   font=("Lucida Sans Unicode", 14, "bold"))
+        self.method.grid(column=1, row=5, pady=(20, 0))
 
         # Radiobutton: Encode and Decode
         self.cipher_direction = IntVar()
-
-        self.option = Radiobutton(self, text="Encode", foreground="#002B5B", font=("Lucida Sans Unicode", 11),
-                                  variable=self.cipher_direction, value=0)
-        self.option.grid(column=0, row=2)
-
-        self.option = Radiobutton(self, text="Decode", foreground="#002B5B", font=("Lucida Sans Unicode", 11),
-                                  variable=self.cipher_direction, value=1)
-        self.option.grid(column=2, row=2)
+        # encode button
+        self.option = CTk.CTkRadioButton(master=self, text="Encode",
+                                         text_color=("black", "white"),
+                                         font=("Lucida Sans Unicode", 14),
+                                         fg_color="#18bc9c",
+                                         hover_color="#3498db",
+                                         variable=self.cipher_direction, value=0)
+        self.option.grid(column=1, row=6, padx=(5,150), pady=10)
+        # decode button
+        self.option = CTk.CTkRadioButton(master=self, text="Decode",
+                                         text_color=("black", "white"),
+                                         fg_color="#18bc9c",
+                                         hover_color="#3498db",
+                                         font=("Lucida Sans Unicode", 14),
+                                         variable=self.cipher_direction, value=1)
+        self.option.grid(column=1, row=6, padx=(210, 0), pady=10)
 
         # Button: Open file
-        self.open_button = Button(self, text='Open TXT File', foreground="#002B5B", font=("Lucida Sans Unicode", 12, "bold"),
-                                  state="disabled", command=self.open_user_file)
-        self.open_button.grid(column=1, row=3, ipadx=5, pady=25)
+        self.open_button = CTk.CTkButton(master=self, text='Open TXT File',
+                                         text_color="#002B5B",
+                                         font=("Lucida Sans Unicode", 14, "bold"),
+                                         fg_color="white",
+                                         border_color="#3498db",
+                                         border_width=2,
+                                         state="disabled",
+                                         command=self.open_user_file)
+        self.open_button.grid(column=1, row=7, ipadx=5, pady=25)
 
-        # Shift label
-        self.instruction = Label(self, text=f"Set cipher shift", foreground="#002B5B", font=("Lucida Sans Unicode", 10))
+
+        # Scale frame
+        self.scale_frame = CTk.CTkFrame(master=self, fg_color=("grey", "#ECF0F1"))
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = Scale(self, variable=self.shift_var, from_=1, foreground="#002B5B", font=("Lucida Sans Unicode", 10),
-                           orient=HORIZONTAL, command=self.change_scale)
+        self.shift = CTk.CTkSlider(master=self.scale_frame, variable=self.shift_var, from_=1, to=50,
+                                   fg_color="#3498db",
+                                   button_color=("white", "grey"),
+                                   button_hover_color="#18bc9c",
+                                   orientation=HORIZONTAL,
+                                   command=self.change_scale)
+
+        # Scale Entry frame
+        self.scale_entry = CTk.CTkEntry(master=self.scale_frame, width=30,
+                                        text_color="black",
+                                        fg_color="white")
+
+        # Shift label
+        self.instruction = CTk.CTkLabel(master=self.scale_frame, text=f"Set cipher shift",
+                                        text_color=("white", "black"),
+                                        font=("Lucida Sans Unicode", 14))
 
         # Button: Encode/Decode
-        self.submit_button = Button(self, text="Encode/Decode", background="#002B5B", foreground="white", font=("Lucida Sans Unicode", 12, "bold"),
-                                    command=lambda: [self.switch_buttons_state(0), self.caesar()])
+        self.submit_button = CTk.CTkButton(master=self, text="Encode/Decode",
+                                           text_color="white",
+                                           font=("Lucida Sans Unicode", 14, "bold"),
+                                           fg_color="#f39c12",
+                                           hover_color="#d05e2f",
+                                           height=40,
+                                           corner_radius=20,
+                                           command=lambda: [self.switch_buttons_state(0), self.caesar()])
 
         # Button: Save File
-        self.save_button = Button(self, text='Save file', foreground="white", font=("Lucida Sans Unicode", 12, "bold"),
-                                  state="disabled", command=self.save_file)
+        self.save_button = CTk.CTkButton(master=self, text='Save file',
+                                         fg_color="white",
+                                         font=("Lucida Sans Unicode", 14, "bold"),
+                                         border_width=2,
+                                         border_color="#18bc9c",
+                                         height=30,
+                                         state="disabled",
+                                         command=self.save_file)
 
+    # Change Light/Dark mode
+    def change_appearance_mode(self, new_appearance_mode):
+        CTk.set_appearance_mode(new_appearance_mode)
 
     # Select language of the cipher
     def combobox_click(self, event):
-
-        if self.combobox.get() == "English":
+        if self.combobox_var.get() == "English":
             self.switch_buttons_state(1)
             self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
+
             # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
@@ -86,18 +155,22 @@ class Application(Frame):
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
-            # Show shift scale when the user select language
-            self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
-            self.instruction.grid(column=1, row=7, padx=5)
+            # Show Scale Frame
+            self.scale_frame.grid(column=1, row=8, padx=20)
 
-        elif self.combobox.get() == "French":
-            self.german_lng = 0
+            # Show shift scale when the user select language
+            self.shift.grid(column=0, row=0, padx=(20,5), pady=(10,0))
+            self.scale_entry.grid(column=1, row=0, padx=(0,20), pady=(10,0))
+            self.instruction.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
+            self.instruction.grid(column=0, row=2, padx=(20, 0), pady=(0, 8))
+
+        elif self.combobox_var.get() == "French":
             self.switch_buttons_state(1)
             self.file = open("alphabets/french.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
+
             # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
@@ -107,17 +180,22 @@ class Application(Frame):
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
-            # Show shift scale when the user select language
-            self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
-            self.instruction.grid(column=1, row=7, padx=5)
+            # Show Scale Frame
+            self.scale_frame.grid(column=1, row=8, padx=20)
 
-        elif self.combobox.get() == "German":
+            # Show shift scale when the user select language
+            self.shift.grid(column=0, row=0, padx=(20, 5), pady=(10, 0))
+            self.scale_entry.grid(column=1, row=0, padx=(0, 20), pady=(10, 0))
+            self.instruction.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
+            self.instruction.grid(column=0, row=2, padx=(20, 0), pady=(0, 8))
+
+        elif self.combobox_var.get() == "German":
             self.switch_buttons_state(1)
             self.file = open("alphabets/german.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
+
             # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
@@ -127,17 +205,22 @@ class Application(Frame):
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
-            # Show shift scale when the user select language
-            self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
-            self.instruction.grid(row=7, column=1, padx=5)
+            # Show Scale Frame
+            self.scale_frame.grid(column=1, row=8, padx=20)
 
-        elif self.combobox.get() == "Russian":
+            # Show shift scale when the user select language
+            self.shift.grid(column=0, row=0, padx=(20, 5), pady=(10, 0))
+            self.scale_entry.grid(column=1, row=0, padx=(0, 20), pady=(10, 0))
+            self.instruction.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
+            self.instruction.grid(column=0, row=2, padx=(20, 0), pady=(0, 8))
+
+        elif self.combobox_var.get() == "Russian":
             self.switch_buttons_state(1)
             self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
             self.alphabet = []
             self.count_letter_in_alphabet = ""
 
+
             # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
@@ -147,14 +230,26 @@ class Application(Frame):
             if int(len(self.count_letter_in_alphabet)) % 2 == 0:
                 self.count_letter_in_alphabet = len(self.alphabet) // 2
 
+            # Show Scale Frame
+            self.scale_frame.grid(column=1, row=8, padx=20)
+
             # Show shift scale when the user select language
-            self.shift.grid(column=1, row=6)
-            self.instruction.config(text=f"Set cipher shift (1-{self.count_letter_in_alphabet}) ")
-            self.instruction.grid(row=7, column=1, padx=5)
+            self.shift.grid(column=0, row=0, padx=(20, 5), pady=(10, 0))
+            self.scale_entry.grid(column=1, row=0, padx=(0, 20), pady=(10, 0))
+            self.instruction.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
+            self.instruction.grid(column=0, row=2, padx=(20, 0), pady=(0, 8))
+
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
-        self.shift.config(to=int(self.count_letter_in_alphabet))
+        self.shift.configure(to=int(self.count_letter_in_alphabet))
+
+        # Put shift_value into Scale Entry
+        self.scale_entry.configure(state="normal")
+        self.scale_entry.delete(0, "end")
+        self.scale_entry.insert(0, self.shift_var.get())
+        self.scale_entry.configure(state="disabled")
+
 
     # Open and read user file
     def open_user_file(self):
@@ -170,7 +265,7 @@ class Application(Frame):
                                                           message="For correct Encode/Decode: make sure that the selected cipher language matches the language of the file.")
 
                     # Show "Encode/Decode" and "Save file" buttons when the user open your file
-                    self.submit_button.grid(column=1, row=8, ipadx=15, pady=15)
+                    self.submit_button.grid(column=1, row=9, ipadx=15, pady=(20,20))
                     self.save_button.grid(column=1, row=10, ipadx=15)
 
                     # Return value
@@ -178,7 +273,6 @@ class Application(Frame):
             except UnicodeDecodeError:
                 warning_message = messagebox.showwarning(title="Wrong file extension!",
                                                          message="The file must have a .txt extension")
-
 
     # Save the final file
     def save_file(self):
@@ -200,14 +294,20 @@ class Application(Frame):
         # Make the "Save file" button active and change bg-color when the user click "Encode/Decode" button
         if button_key == 0:
             if self.submit_button:
-                self.save_button["state"] = "normal"
-                self.save_button.config(background="#5F8D4E")
+                self.save_button.configure(state="normal",
+                                           text_color="white",
+                                           fg_color="#18bc9c",
+                                           hover_color="#128A72",
+                                           border_width=0)
 
         # Make the "Open File" button active and change bg-color when the user select one of the cipher language
         if button_key == 1:
             if self.combobox_click:
-                self.open_button["state"] = "normal"
-                self.open_button.config(background="#F6FFDE")
+                self.open_button.configure(state="normal",
+                                           text_color="white",
+                                           fg_color="#3498db",
+                                           hover_color="#375a7f",
+                                           border_width=0)
 
     # Main func to Encode/Decode user file
     def caesar(self):
@@ -237,15 +337,6 @@ class Application(Frame):
 
 
 # Initialize app window
-window = Tk()
-window.title("Caesar Cipher")
-icon_app = PhotoImage(file="img/icon-app.png")
-window.wm_iconphoto(False, icon_app)
-window.config(padx=50, pady=5)
-app = Application(window)
-
-
+window = App()
+window.configure(padx=10, pady=15)
 window.mainloop()
-
-
-
