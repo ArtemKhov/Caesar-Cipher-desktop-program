@@ -246,8 +246,6 @@ class App(CTk.CTk):
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
-
-        print(self.shift_var.get())
         self.shift.configure(to=int(self.count_letter_in_alphabet))
 
         # Put shift_value into Scale Entry
