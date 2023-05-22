@@ -341,8 +341,8 @@ class App(CTk.CTk):
         # Return final text
         return self.ciphertext
 
-
-# Initialize app window
-window = App()
-window.configure(padx=10, pady=15)
-window.mainloop()
+if __name__ == '__main__':
+    # Initialize app window
+    window = App()
+    window.configure(padx=10, pady=15)
+    window.mainloop()
