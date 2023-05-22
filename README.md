@@ -3,9 +3,9 @@
 Caesar Cipher is one of the widely known encryption techniques. 
 This program helps you to encrypt or decrypt the messages.
 
-Build with Python. Implemented with a GUI (made in tkinter).
+Build with Python. Implemented with a GUI (made with the CustomTkinter).
 
-![ScreenShot](img/release_app.png)
+![ScreenShot](images/light_version/light_app_full.png) ||| ![ScreenShot](images/dark_version/dark_app_full.png)
 
 ## Features
 
@@ -15,6 +15,7 @@ Build with Python. Implemented with a GUI (made in tkinter).
 - Read user text from file
 - Save the encrypted text in an individual file
 - Buttons in the program appear/become available as you select options
+- App realise with modern GUI (CustomTkinter)
 
 ## Fast using repo
 You can set up project locally.
@@ -23,6 +24,15 @@ To get a local copy:
    git clone https://github.com/ArtemKhov/Caesar-Cipher-desktop-program
    ```
 Make sure that your using `python3`
+
+Don't forget to install packages:
+```sh
+   pip3 install -r requirements.txt
+   ```
+or
+```sh
+   pip install -r requirements.txt
+   ```
 
 ## License
 
