@@ -52,7 +52,7 @@ class App(CTk.CTk):
                                         border_color=("white", "grey"),
                                         button_color=("#ECF0F1", "grey"),
                                         button_hover_color="#18bc9c",
-                                        variable=self.combobox_var, command=self.combobox_click)
+                                        variable=self.combobox_var, command=self.select_cipher_language)
         self.combobox.grid(column=0, row=1, pady=(0, 25))
 
 
@@ -142,80 +142,57 @@ class App(CTk.CTk):
     def change_appearance_mode(self, new_appearance_mode):
         CTk.set_appearance_mode(new_appearance_mode)
 
-    # Select language of the cipher
-    def combobox_click(self, event):
+    def select_cipher_language(self, event):
         if self.combobox_var.get() == "English":
             self.switch_buttons_state(1)
             self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
             self.alphabet = []
-            self.count_letter_in_alphabet = ""
 
-            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
-                self.count_letter_in_alphabet += "".join(letter.split(","))
 
-            # Correct alphabet to the cipher shift
-            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            self.get_amount_alphabet_letters()
 
-            self.show_scale_frame()
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "French":
             self.switch_buttons_state(1)
             self.file = open("alphabets/french.txt", "r", encoding="UTF-8")
             self.alphabet = []
-            self.count_letter_in_alphabet = ""
 
-            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
-                self.count_letter_in_alphabet += "".join(letter.split(","))
 
-            # Correct alphabet to the cipher shift
-            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            self.get_amount_alphabet_letters()
 
-            self.show_scale_frame()
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "German":
             self.switch_buttons_state(1)
             self.file = open("alphabets/german.txt", "r", encoding="UTF-8")
             self.alphabet = []
-            self.count_letter_in_alphabet = ""
 
-            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
-                self.count_letter_in_alphabet += "".join(letter.split(","))
 
-            # Correct alphabet to the cipher shift
-            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            self.get_amount_alphabet_letters()
 
-            self.show_scale_frame()
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "Russian":
             self.switch_buttons_state(1)
             self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
             self.alphabet = []
-            self.count_letter_in_alphabet = ""
 
-            # Return an alphabet and length of the alphabet into variables
             for letter in self.file:
                 self.alphabet += letter.split(",")
-                self.count_letter_in_alphabet += "".join(letter.split(","))
 
-            # Correct alphabet to the cipher shift
-            if int(len(self.count_letter_in_alphabet)) % 2 == 0:
-                self.count_letter_in_alphabet = len(self.alphabet) // 2
+            self.get_amount_alphabet_letters()
 
-            self.show_scale_frame()
             self.show_shift_elements()
 
+    def get_amount_alphabet_letters(self):
+        self.count_letter_in_alphabet = len(self.alphabet) // 2
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
@@ -227,11 +204,9 @@ class App(CTk.CTk):
         self.scale_entry.insert(0, self.shift_var.get())
         self.scale_entry.configure(state="disabled")
 
-    def show_scale_frame(self):
-        self.scale_frame.grid(column=1, row=8, padx=20)
-
-    # Show shift scale, scale entry and shift text
+    # Show shift frame, shift scale, scale entry box and shift text
     def show_shift_elements(self):
+        self.scale_frame.grid(column=1, row=8, padx=20)
         self.shift.grid(column=0, row=0, padx=(20, 5), pady=(10, 0))
         self.scale_entry.grid(column=1, row=0, padx=(0, 20), pady=(10, 0))
         self.set_cipher_label.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
@@ -285,7 +260,7 @@ class App(CTk.CTk):
 
         # Make the "Open File" button active
         if button_key == 1:
-            if self.combobox_click:
+            if self.select_cipher_language:
                 self.open_button.configure(state="normal",
                                            text_color="white",
                                            fg_color="#3498db",
