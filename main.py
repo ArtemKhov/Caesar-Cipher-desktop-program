@@ -220,7 +220,6 @@ class App(CTk.CTk):
             try:
                 with open(filepath, "r", encoding="UTF-8") as file:
                     text = file.read()
-                    #TODO: need check matching languages
                     self.text_editor.delete("1.0", END)
                     self.text_editor.insert("1.0", text)
                     success_message = messagebox.showinfo(title="File downloaded successfully",
@@ -272,7 +271,6 @@ class App(CTk.CTk):
     # Encoding/Decoding user file
     def encrypt_user_file(self):
         user_file = self.text_editor.get("1.0", END)
-        print(user_file) #debug
         shift_amount = self.shift_var.get()
 
         # If the user select "Decode" shift == -shift
@@ -292,7 +290,6 @@ class App(CTk.CTk):
                     self.ciphertext += self.alphabet_upper[new_position]
                 else:
                     self.ciphertext += char
-        print(self.ciphertext) #debug
         return self.ciphertext
 
 if __name__ == '__main__':
