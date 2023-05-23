@@ -145,54 +145,55 @@ class App(CTk.CTk):
     def select_cipher_language(self, event):
         if self.combobox_var.get() == "English":
             self.switch_buttons_state(1)
-            self.file = open("alphabets/english.txt", "r", encoding="UTF-8")
-            self.alphabet = []
 
-            for letter in self.file:
-                self.alphabet += letter.split(",")
+            self.file_lower_alphabet = open("alphabets/english/english_lower.txt", "r", encoding="UTF-8")
+            self.file_upper_alphabet = open("alphabets/english/english_upper.txt", "r", encoding="UTF-8")
+            self.store_alphabet()
 
             self.get_amount_alphabet_letters()
-
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "French":
             self.switch_buttons_state(1)
-            self.file = open("alphabets/french.txt", "r", encoding="UTF-8")
-            self.alphabet = []
 
-            for letter in self.file:
-                self.alphabet += letter.split(",")
+            self.file_lower_alphabet = open("alphabets/french/french_lower.txt", "r", encoding="UTF-8")
+            self.file_upper_alphabet = open("alphabets/french/french_upper.txt", "r", encoding="UTF-8")
+            self.store_alphabet()
 
             self.get_amount_alphabet_letters()
-
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "German":
             self.switch_buttons_state(1)
-            self.file = open("alphabets/german.txt", "r", encoding="UTF-8")
-            self.alphabet = []
 
-            for letter in self.file:
-                self.alphabet += letter.split(",")
+            self.file_lower_alphabet = open("alphabets/german/german_lower.txt", "r", encoding="UTF-8")
+            self.file_upper_alphabet = open("alphabets/german/german_upper.txt", "r", encoding="UTF-8")
+            self.store_alphabet()
 
             self.get_amount_alphabet_letters()
-
             self.show_shift_elements()
 
         elif self.combobox_var.get() == "Russian":
             self.switch_buttons_state(1)
-            self.file = open("alphabets/russian.txt", "r", encoding="UTF-8")
-            self.alphabet = []
 
-            for letter in self.file:
-                self.alphabet += letter.split(",")
+            self.file_lower_alphabet = open("alphabets/russian/russian_lower.txt", "r", encoding="UTF-8")
+            self.file_upper_alphabet = open("alphabets/russian/russian_upper.txt", "r", encoding="UTF-8")
+            self.store_alphabet()
 
             self.get_amount_alphabet_letters()
-
             self.show_shift_elements()
 
+    def store_alphabet(self):
+        self.alphabet_lower = []
+        self.alphabet_upper = []
+
+        for letter in self.file_lower_alphabet:
+            self.alphabet_lower += letter.split(",")
+        for letter in self.file_upper_alphabet:
+            self.alphabet_upper += letter.split(",")
+
     def get_amount_alphabet_letters(self):
-        self.count_letter_in_alphabet = len(self.alphabet) // 2
+        self.count_letter_in_alphabet = len(self.alphabet_lower) // 2
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
@@ -219,6 +220,7 @@ class App(CTk.CTk):
             try:
                 with open(filepath, "r", encoding="UTF-8") as file:
                     text = file.read()
+                    #TODO: need check matching languages
                     self.text_editor.delete("1.0", END)
                     self.text_editor.insert("1.0", text)
                     success_message = messagebox.showinfo(title="File downloaded successfully",
@@ -280,10 +282,14 @@ class App(CTk.CTk):
         self.ciphertext = ""
         for line in user_file:
             for char in line:
-                if char.lower() in self.alphabet:
-                    position = self.alphabet.index(char.lower())
+                if char in self.alphabet_lower:
+                    position = self.alphabet_lower.index(char)
                     new_position = position + (shift_amount % (int(self.count_letter_in_alphabet)))
-                    self.ciphertext += self.alphabet[new_position]
+                    self.ciphertext += self.alphabet_lower[new_position]
+                elif char in self.alphabet_upper:
+                    position = self.alphabet_upper.index(char)
+                    new_position = position + (shift_amount % (int(self.count_letter_in_alphabet)))
+                    self.ciphertext += self.alphabet_upper[new_position]
                 else:
                     self.ciphertext += char
         print(self.ciphertext) #debug
