@@ -22,8 +22,10 @@ class App(CTk.CTk):
         self.logo = CTk.CTkLabel(master=self, text="", image=self.logo)
         self.logo.grid(column=1, row=2)
 
-        # Switch Dark/Light mode slider
-        self.appearance_mode_slider = CTk.CTkOptionMenu(master=self, values=["Light", "Dark"], width=70,
+        # Menu Dark/Light mode
+        self.appearance_mode_slider = CTk.CTkOptionMenu(master=self,
+                                                        values=["Light", "Dark"],
+                                                        width=70,
                                                         text_color=("white", "black"),
                                                         fg_color=("grey", "white"),
                                                         button_color=("#69676E", "#ECF0F1"),
@@ -45,7 +47,8 @@ class App(CTk.CTk):
         # Combobox: select cipher language
         self.combobox_var = CTk.StringVar()
         self.languages = ["English", "French", "German", "Russian"]
-        self.combobox = CTk.CTkComboBox(master=self.language_frame, values=self.languages,
+        self.combobox = CTk.CTkComboBox(master=self.language_frame,
+                                        values=self.languages,
                                         text_color=("black", "white"),
                                         font=("Lucida Sans Unicode", 14),
                                         fg_color=("white", "#69676E"),
@@ -57,15 +60,17 @@ class App(CTk.CTk):
 
 
         # Cipher Method label
-        self.method_label = CTk.CTkLabel(master=self, text="Choose method:",
-                                   text_color=("black", "white"),
-                                   font=("Lucida Sans Unicode", 14, "bold"))
+        self.method_label = CTk.CTkLabel(master=self,
+                                         text="Choose method:",
+                                         text_color=("black", "white"),
+                                         font=("Lucida Sans Unicode", 14, "bold"))
         self.method_label.grid(column=1, row=5, pady=(20, 0))
 
         # Radiobutton: Encode and Decode
         self.cipher_direction = IntVar()
 
-        self.option = CTk.CTkRadioButton(master=self, text="Encode",
+        self.option = CTk.CTkRadioButton(master=self,
+                                         text="Encode",
                                          text_color=("black", "white"),
                                          font=("Lucida Sans Unicode", 14),
                                          fg_color="#18bc9c",
@@ -73,7 +78,8 @@ class App(CTk.CTk):
                                          variable=self.cipher_direction, value=0)
         self.option.grid(column=1, row=6, padx=(5,150), pady=10)
 
-        self.option = CTk.CTkRadioButton(master=self, text="Decode",
+        self.option = CTk.CTkRadioButton(master=self,
+                                         text="Decode",
                                          text_color=("black", "white"),
                                          fg_color="#18bc9c",
                                          hover_color="#3498db",
@@ -82,7 +88,8 @@ class App(CTk.CTk):
         self.option.grid(column=1, row=6, padx=(210, 0), pady=10)
 
         # Button: Open file
-        self.open_button = CTk.CTkButton(master=self, text='Open TXT File',
+        self.open_button = CTk.CTkButton(master=self,
+                                         text='Open TXT File',
                                          text_color="#002B5B",
                                          font=("Lucida Sans Unicode", 14, "bold"),
                                          fg_color="white",
@@ -97,7 +104,10 @@ class App(CTk.CTk):
 
         # Scale: shift amount
         self.shift_var = IntVar()
-        self.shift = CTk.CTkSlider(master=self.scale_frame, variable=self.shift_var, from_=1, to=50,
+        self.shift = CTk.CTkSlider(master=self.scale_frame,
+                                   variable=self.shift_var,
+                                   from_=1,
+                                   to=50,
                                    fg_color="#3498db",
                                    button_color=("white", "grey"),
                                    button_hover_color="#18bc9c",
@@ -105,31 +115,34 @@ class App(CTk.CTk):
                                    command=self.change_scale)
         self.shift.set(1)
 
-
         # Scale Entry frame
-        self.scale_entry = CTk.CTkEntry(master=self.scale_frame, width=30,
+        self.scale_entry = CTk.CTkEntry(master=self.scale_frame,
+                                        width=30,
                                         text_color="black",
                                         fg_color="white")
         self.scale_entry.insert(0, "1")
         self.scale_entry.configure(state="disabled")
 
         # Shift label
-        self.set_cipher_label = CTk.CTkLabel(master=self.scale_frame, text=f"Set cipher shift",
-                                        text_color=("white", "black"),
-                                        font=("Lucida Sans Unicode", 14))
+        self.set_cipher_label = CTk.CTkLabel(master=self.scale_frame,
+                                             text=f"Set cipher shift",
+                                             text_color=("white", "black"),
+                                             font=("Lucida Sans Unicode", 14))
 
         # Button: Encode/Decode
-        self.encode_decode_button = CTk.CTkButton(master=self, text="Encode/Decode",
-                                           text_color="white",
-                                           font=("Lucida Sans Unicode", 14, "bold"),
-                                           fg_color="#f39c12",
-                                           hover_color="#d05e2f",
-                                           height=40,
-                                           corner_radius=20,
-                                           command=lambda: [self.switch_buttons_state(0), self.encrypt_user_file()])
+        self.encode_decode_button = CTk.CTkButton(master=self,
+                                                  height=40,
+                                                  text="Encode/Decode",
+                                                  text_color="white",
+                                                  font=("Lucida Sans Unicode", 14, "bold"),
+                                                  fg_color="#f39c12",
+                                                  hover_color="#d05e2f",
+                                                  corner_radius=20,
+                                                  command=lambda: [self.switch_buttons_state(0), self.encrypt_user_file()])
 
         # Button: Save File
-        self.save_button = CTk.CTkButton(master=self, text='Save file',
+        self.save_button = CTk.CTkButton(master=self,
+                                         text='Save file',
                                          fg_color="white",
                                          font=("Lucida Sans Unicode", 14, "bold"),
                                          border_width=2,
@@ -138,9 +151,11 @@ class App(CTk.CTk):
                                          state="disabled",
                                          command=self.save_file)
 
+
     # Change Light/Dark mode
     def change_appearance_mode(self, new_appearance_mode):
         CTk.set_appearance_mode(new_appearance_mode)
+
 
     def select_cipher_language(self, event):
         if self.combobox_var.get() == "English":
@@ -183,6 +198,7 @@ class App(CTk.CTk):
             self.get_amount_alphabet_letters()
             self.show_shift_elements()
 
+
     def store_alphabet(self):
         self.alphabet_lower = []
         self.alphabet_upper = []
@@ -192,8 +208,10 @@ class App(CTk.CTk):
         for letter in self.file_upper_alphabet:
             self.alphabet_upper += letter.split(",")
 
+
     def get_amount_alphabet_letters(self):
         self.count_letter_in_alphabet = len(self.alphabet_lower) // 2
+
 
     # Change Scale according to the length of the selected alphabet
     def change_scale(self, another_parameter):
@@ -205,6 +223,7 @@ class App(CTk.CTk):
         self.scale_entry.insert(0, self.shift_var.get())
         self.scale_entry.configure(state="disabled")
 
+
     # Show shift frame, shift scale, scale entry box and shift text
     def show_shift_elements(self):
         self.scale_frame.grid(column=1, row=8, padx=20)
@@ -212,6 +231,7 @@ class App(CTk.CTk):
         self.scale_entry.grid(column=1, row=0, padx=(0, 20), pady=(10, 0))
         self.set_cipher_label.configure(text=f"Set cipher shift (1-{self.count_letter_in_alphabet})")
         self.set_cipher_label.grid(column=0, row=2, padx=(20, 0), pady=(0, 8))
+
 
     def open_and_read_user_file(self):
         self.text_editor = Text()
@@ -234,6 +254,7 @@ class App(CTk.CTk):
                 warning_message = messagebox.showwarning(title="Wrong file extension!",
                                                          message="The file must have a .txt extension")
 
+
     def save_file(self):
         files = [('All Files', '*.*'),
                  ('Text Document', '*.txt')]
@@ -247,6 +268,7 @@ class App(CTk.CTk):
             except AttributeError:
                 warning_message = messagebox.showwarning(title="Warning",
                                                          message="Make sure that you select the cipher language or download your file")
+
 
     # Switch state of the buttons
     def switch_buttons_state(self, button_key):
@@ -267,6 +289,7 @@ class App(CTk.CTk):
                                            fg_color="#3498db",
                                            hover_color="#375a7f",
                                            border_width=0)
+
 
     # Encoding/Decoding user file
     def encrypt_user_file(self):
@@ -291,6 +314,7 @@ class App(CTk.CTk):
                 else:
                     self.ciphertext += char
         return self.ciphertext
+
 
 if __name__ == '__main__':
     # Initialize app window
